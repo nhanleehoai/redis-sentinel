@@ -1,0 +1,25 @@
+#This is docker-compose version for SWARM using OVERLAY network
+# To run the services, use "docker stack deploy"
+
+version: '3.3'
+services:
+    sentinel:
+        image: "registry.nhan.com:5000/redis-sentinel:test"
+        ports:
+            - "26379:26379"
+        command:  "redis-sentinel /tmp/sentinel.conf --protected-mode no --port 26379 --logfile /tmp/redis-26379.log --loglevel debug"
+        networks:
+            - redis_network
+        deploy:
+            mode: global
+            resources:
+                limits:
+                    cpus: '0.1'
+                    memory: 1G
+                reservations:
+                    cpus: '0.001'
+                    memory: 500M 
+networks:
+    redis_network:
+        external:
+            name: redis_redis_network
